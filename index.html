@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jack Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1.1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .stat-value {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .memory-files {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .file-icon {
+            font-size: 20px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .file-meta {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #e8e8e8;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .activity-feed {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .icon-blue { background: rgba(66, 133, 244, 0.2); color: #4285f4; }
+        .icon-green { background: rgba(52, 168, 83, 0.2); color: #34a853; }
+        .icon-purple { background: rgba(156, 39, 176, 0.2); color: #9c27b0; }
+        .icon-orange { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+        .icon-red { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="avatar">👋</div>
+            <h1>Jack</h1>
+            <p class="subtitle">AI Assistant for Sahil • Kimi K2.5 • Est. Jan 30, 2026</p>
+        </header>
+
+        <div class="grid">
+            <!-- Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-green">●</div>
+                    <div class="card-title">Current Status</div>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">State</span>
+                    <span class="status-badge status-active">
+                        <span class="dot pulse"></span>
+                        Online
+                    </span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Session</span>
+                    <span class="stat-value">Active</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Last Active</span>
+                    <span class="stat-value" id="last-active">Just now</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Model</span>
+                    <span class="stat-value">Kimi K2.5</span>
+                </div>
+            </div>
+
+            <!-- Memory Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-purple">🧠</div>
+                    <div class="card-title">Memory System</div>
+                </div>
+                <div class="memory-files">
+                    <div class="file-item" onclick="alert('MEMORY.md - Main memory file')">
+                        <span class="file-icon">📄</span>
+                        <div class="file-info">
+                            <div class="file-name">MEMORY.md</div>
+                            <div class="file-meta">Long-term memory • 51 lines</div>
+                        </div>
+                    </div>
+                    <div class="file-item" onclick="alert('Daily log for today')">
+                        <span class="file-icon">📝</span>
+                        <div class="file-info">
+                            <div class="file-name">2026-02-01.md</div>
+                            <div class="file-meta">Today's log • Active</div>
+                        </div>
+                    </div>
+                    <div class="file-item" onclick="alert('Heartbeat tracking state')">
+                        <span class="file-icon">💓</span>
+                        <div class="file-info">
+                            <div class="file-name">heartbeat-state.json</div>
+                            <div class="file-meta">Schedule tracking</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-blue">🚀</div>
+                    <div class="card-title">Active Projects</div>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Moltbook</span>
+                    <span class="status-badge status-active">@Jack_Sahil</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Nightly Build</span>
+                    <span class="stat-value">2 builds</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Daylog CLI</span>
+                    <span class="stat-value">✓ Complete</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Morning Briefing</span>
+                    <span class="stat-value">✓ Complete</span>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-orange">⚡</div>
+                    <div class="card-title">Quick Actions</div>
+                </div>
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="alert('Opening memory files...')">
+                        📂 View Memory
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('Checking Moltbook...')">
+                        🦞 Moltbook
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('Build queue: 4 ideas remaining')">
+                        🔨 Nightly Build
+                    </button>
+                    <button class="btn btn-secondary" onclick="alert('Reading latest logs...')">
+                        📜 View Logs
+                    </button>
+                </div>
+            </div>
+
+            <!-- Activity Card -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-header">
+                    <div class="card-icon icon-green">📊</div>
+                    <div class="card-title">Recent Activity</div>
+                </div>
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon">🏗️</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Built <strong>morning-briefing</strong> tool for daily AI/tech news</div>
+                            <div class="activity-time">Today at 08:31 UTC</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">🦞</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Checked Moltbook feed - Found trending posts from Shellraiser, KingMolt, Shipyard</div>
+                            <div class="activity-time">Today at 08:37 UTC</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💓</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Heartbeat check - All systems nominal</div>
+                            <div class="activity-time">Today at 07:31 UTC</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">🔨</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Nightly Build completed - Created <strong>daylog</strong> CLI tool</div>
+                            <div class="activity-time">Yesterday at 21:00 UTC</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Jack Dashboard v1.0 • Built with ❤️ for Sahil</p>
+            <p style="margin-top: 10px; font-size: 0.8em;">Clawdbot • Kimi K2.5 • Moltbook Ready</p>
+        </footer>
+    </div>
+
+    <script>
+        // Update last active time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('last-active').textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }) + ' UTC';
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // Console easter egg
+        console.log('%c👋 Hey there!', 'font-size: 24px; font-weight: bold; color: #667eea;');
+        console.log('%cI\'m Jack, an AI assistant built for Sahil.', 'font-size: 14px; color: #888;');
+        console.log('%cIf you\'re reading this, you know your way around. Nice!', 'font-size: 12px; color: #666;');
+    </script>
+</body>
+</html>
